@@ -1,33 +1,12 @@
 <?php
 
 /**
- * PostgreSQL-backed session handler.
- * Required on Vercel (stateless serverless) where the default file-based
- * PHP sessions are not shared across Lambda invocations.
+ * PostgreSQL-backed session handler using the shared database connection.
+ * Stores sessions in the `sessions` table so they survive across
+ * Vercel Lambda invocations (stateless serverless environment).
  */
 class DatabaseSessionHandler implements SessionHandlerInterface
 {
-    private ?PDO $pdo = null;
-
-    private function db(): PDO
-    {
-        if ($this->pdo === null) {
-            $config = require dirname(__DIR__, 2) . '/config/database.php';
-            $dsn = sprintf(
-                'pgsql:host=%s;dbname=%s;port=%s',
-                $config['host'],
-                $config['database'],
-                $config['port'] ?? '5432'
-            );
-            $this->pdo = new PDO($dsn, $config['username'], $config['password'], [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-        }
-
-        return $this->pdo;
-    }
-
     public function open(string $savePath, string $sessionName): bool
     {
         return true;
@@ -41,13 +20,15 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     public function read(string $id): string|false
     {
         try {
-            $stmt = $this->db()->prepare('SELECT data FROM sessions WHERE id = ?');
+            $stmt = Database::connection()->prepare(
+                'SELECT data FROM sessions WHERE id = ?'
+            );
             $stmt->execute([$id]);
             $row = $stmt->fetch();
 
             return $row ? (string) $row['data'] : '';
         } catch (\Throwable $e) {
-            error_log('Session read error: ' . $e->getMessage());
+            error_log('[session.read] ' . $e->getMessage());
 
             return '';
         }
@@ -56,47 +37,51 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     public function write(string $id, string $data): bool
     {
         try {
-            $stmt = $this->db()->prepare(
+            $stmt = Database::connection()->prepare(
                 'INSERT INTO sessions (id, data, last_activity)
                  VALUES (?, ?, NOW())
-                 ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, last_activity = NOW()'
+                 ON CONFLICT (id) DO UPDATE
+                   SET data = EXCLUDED.data,
+                       last_activity = NOW()'
             );
             $stmt->execute([$id, $data]);
-
-            return true;
         } catch (\Throwable $e) {
-            error_log('Session write error: ' . $e->getMessage());
-
-            return false;
+            error_log('[session.write] ' . $e->getMessage());
         }
+
+        // Always return true — returning false triggers an uncatchable PHP warning.
+        // If the write failed the user will simply re-authenticate on next request.
+        return true;
     }
 
     public function destroy(string $id): bool
     {
         try {
-            $stmt = $this->db()->prepare('DELETE FROM sessions WHERE id = ?');
+            $stmt = Database::connection()->prepare(
+                'DELETE FROM sessions WHERE id = ?'
+            );
             $stmt->execute([$id]);
-
-            return true;
         } catch (\Throwable $e) {
-            error_log('Session destroy error: ' . $e->getMessage());
-
-            return false;
+            error_log('[session.destroy] ' . $e->getMessage());
         }
+
+        return true;
     }
 
     public function gc(int $maxLifetime): int|false
     {
         try {
             $cutoff = date('Y-m-d H:i:s', time() - $maxLifetime);
-            $stmt = $this->db()->prepare('DELETE FROM sessions WHERE last_activity < ?');
+            $stmt = Database::connection()->prepare(
+                'DELETE FROM sessions WHERE last_activity < ?'
+            );
             $stmt->execute([$cutoff]);
 
             return $stmt->rowCount();
         } catch (\Throwable $e) {
-            error_log('Session gc error: ' . $e->getMessage());
+            error_log('[session.gc] ' . $e->getMessage());
 
-            return false;
+            return 0;
         }
     }
 }
