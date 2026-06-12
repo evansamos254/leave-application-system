@@ -81,3 +81,9 @@ try {
         'message' => 'Something went wrong. Check storage/logs/app.log for details.',
     ]);
 }
+
+// Explicitly flush session so it persists in Supabase before the process exits.
+// Shutdown-based session_write_close() is unreliable in Vercel's serverless PHP.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}

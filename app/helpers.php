@@ -58,6 +58,9 @@ function asset(string $path): string
 
 function redirect(string $path): never
 {
+    // Explicitly flush session before redirect so the DB write happens
+    // while the connection is still active, not during PHP shutdown.
+    session_write_close();
     header('Location: ' . url($path));
     exit;
 }
