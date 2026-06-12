@@ -5,7 +5,7 @@
  * Required on Vercel (stateless serverless) where the default file-based
  * PHP sessions are not shared across Lambda invocations.
  */
-class SessionHandler implements SessionHandlerInterface
+class DatabaseSessionHandler implements SessionHandlerInterface
 {
     private ?PDO $pdo = null;
 

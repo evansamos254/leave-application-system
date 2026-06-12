@@ -36,7 +36,7 @@ require dirname(__DIR__) . '/app/helpers.php';
 // Use PostgreSQL-backed sessions so they survive across Vercel Lambda invocations.
 // SessionHandler must be registered BEFORE session_start().
 require_once dirname(__DIR__) . '/app/models/SessionHandler.php';
-$sessionHandler = new SessionHandler();
+$sessionHandler = new DatabaseSessionHandler();
 session_set_save_handler($sessionHandler, true);
 
 session_start();
