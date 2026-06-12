@@ -430,7 +430,7 @@ class AdminController
         }
 
         $stmt = db()->prepare('INSERT INTO holidays (name, holiday_date) VALUES (?, ?)
-                              ON DUPLICATE KEY UPDATE name = VALUES(name)');
+                              ON CONFLICT (holiday_date) DO UPDATE SET name = EXCLUDED.name');
         $stmt->execute([$name, $date]);
 
         AuditService::record('save_holiday', 'holidays');

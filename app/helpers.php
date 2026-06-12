@@ -273,5 +273,7 @@ function format_days(mixed $value, string $default = '-'): string
 function app_log(Throwable $throwable): void
 {
     $line = '[' . date('Y-m-d H:i:s') . '] ' . $throwable->getMessage() . PHP_EOL . $throwable->getTraceAsString() . PHP_EOL;
-    file_put_contents(dirname(__DIR__) . '/storage/logs/app.log', $line, FILE_APPEND);
+    $logFile = app_config('log_file') ?: dirname(__DIR__) . '/storage/logs/app.log';
+    @file_put_contents($logFile, $line, FILE_APPEND);
+    error_log($throwable->getMessage());
 }

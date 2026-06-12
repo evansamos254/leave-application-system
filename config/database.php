@@ -1,10 +1,9 @@
 <?php
 
 return [
-    'host' => '127.0.0.1',
-    'database' => 'leave_system',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8mb4',
+    'host'     => getenv('DB_HOST') ?: 'db.sodjosasxtgqbbilecva.supabase.co',
+    'database' => getenv('DB_NAME') ?: 'postgres',
+    'username' => getenv('DB_USER') ?: 'postgres',
+    'password' => getenv('DB_PASSWORD') ?: '',
+    'port'     => getenv('DB_PORT') ?: '5432',
 ];
-

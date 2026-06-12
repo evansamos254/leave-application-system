@@ -97,8 +97,9 @@ class LeaveBalanceService
 
         foreach ($types as $type) {
             $stmt = db()->prepare(
-                'INSERT IGNORE INTO leave_balances (employee_id, leave_type_id, year, entitlement)
-                 VALUES (?, ?, ?, ?)'
+                'INSERT INTO leave_balances (employee_id, leave_type_id, year, entitlement)
+                 VALUES (?, ?, ?, ?)
+                 ON CONFLICT (employee_id, leave_type_id, year) DO NOTHING'
             );
             $stmt->execute([$employeeId, $type['id'], $year, $type['default_entitlement']]);
         }

@@ -6,7 +6,8 @@ class Employee
     {
         $stmt = db()->prepare(
             'INSERT INTO employees (user_id, staff_id, department_id, designation, supervisor_id, employment_date)
-             VALUES (:user_id, :staff_id, :department_id, :designation, :supervisor_id, :employment_date)'
+             VALUES (:user_id, :staff_id, :department_id, :designation, :supervisor_id, :employment_date)
+             RETURNING id'
         );
 
         $stmt->execute([
@@ -18,7 +19,7 @@ class Employee
             'employment_date' => $data['employment_date'] ?: null,
         ]);
 
-        return (int) db()->lastInsertId();
+        return (int) $stmt->fetchColumn();
     }
 
     public static function find(int $id): ?array

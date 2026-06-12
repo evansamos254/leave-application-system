@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-session_start();
-
 $config = require dirname(__DIR__) . '/config/app.php';
 date_default_timezone_set($config['timezone'] ?? 'UTC');
 
@@ -34,3 +32,11 @@ spl_autoload_register(function (string $class): void {
 });
 
 require dirname(__DIR__) . '/app/helpers.php';
+
+// Use PostgreSQL-backed sessions so they survive across Vercel Lambda invocations.
+// SessionHandler must be registered BEFORE session_start().
+require_once dirname(__DIR__) . '/app/models/SessionHandler.php';
+$sessionHandler = new SessionHandler();
+session_set_save_handler($sessionHandler, true);
+
+session_start();
