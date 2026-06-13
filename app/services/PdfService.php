@@ -141,7 +141,7 @@ class PdfService
                     $row['leave_type_name'] ?? 'N/A',
                     format_days($row['request_count'] ?? null, '0'),
                     format_days($row['total_days'] ?? null, '0'),
-                ], 22, $index % 2 === 0 ? [1, 1, 1] : [0.97, 0.99, 0.96]);
+                ], 22, $index % 2 === 0 ? [1, 1, 1] : [0.97, 0.96, 1.00]);
                 $rowY -= 22;
             }
         }
@@ -188,7 +188,7 @@ class PdfService
                 $request['leave_type_name'] ?? 'N/A',
                 format_date($request['start_date'] ?? null) . ' to ' . format_date($request['end_date'] ?? null),
                 format_days($request['days_requested'] ?? null, '0'),
-            ], 32, $index % 2 === 0 ? [1, 1, 1] : [0.97, 0.99, 0.96]);
+            ], 32, $index % 2 === 0 ? [1, 1, 1] : [0.97, 0.96, 1.00]);
             $rowY -= 32;
         }
 
@@ -205,11 +205,11 @@ class PdfService
     {
         $displayTitle = $suffix ? $title . ' - ' . $suffix : $title;
 
-        $this->rect(50, 724, 495, 70, false, [0.96, 0.99, 0.94]);
+        $this->rect(50, 724, 495, 70, false, [0.95, 0.94, 1.00]);
         $this->rect(50, 724, 495, 70);
         $this->drawImage(58, 739, 58);
-        $this->centerText(780, 'COUNTY GOVERNMENT OF BUSIA', 13, 'F2');
-        $this->centerText(764, strtoupper((string) app_config('name', 'Staff Online Leave Application System')), 9, 'F2');
+        $this->centerText(780, strtoupper((string) app_config('name', 'XEROMYND')), 13, 'F2');
+        $this->centerText(764, 'STAFF ONLINE LEAVE APPLICATION SYSTEM', 9, 'F2');
         $this->centerText(744, $displayTitle, 15, 'F2');
         $this->textAt(430, 783, 'Ref: ' . $reference, 8, 'F2');
         $this->textAt(430, 768, 'Generated: ' . date('d M Y'), 8);
@@ -222,7 +222,7 @@ class PdfService
 
         foreach ($columns as $column) {
             $width = (float) $column['width'];
-            $this->rect($cursor, $y, $width, $height, true, [0.08, 0.42, 0.27], [0.08, 0.42, 0.27], 0.5);
+            $this->rect($cursor, $y, $width, $height, true, [0.30, 0.16, 0.65], [0.30, 0.16, 0.65], 0.5);
             $this->textAt($cursor + 5, $y + 7, (string) $column['label'], 7, 'F2', [1, 1, 1]);
             $cursor += $width;
         }
@@ -235,7 +235,7 @@ class PdfService
 
         foreach ($columns as $index => $column) {
             $width = (float) $column['width'];
-            $this->rect($cursor, $y, $width, $height, true, $fill, [0.78, 0.84, 0.73], 0.4);
+            $this->rect($cursor, $y, $width, $height, true, $fill, [0.76, 0.78, 0.90], 0.4);
 
             $lines = $this->wrapForWidth((string) ($values[$index] ?? 'N/A'), $width - 10, 8);
             $maxLines = max(1, (int) floor(($height - 8) / 9));
@@ -249,7 +249,7 @@ class PdfService
 
     private function reportMessageBox(float $x, float $y, float $w, float $h, string $message): void
     {
-        $this->rect($x, $y, $w, $h, true, [1, 1, 1], [0.78, 0.84, 0.73]);
+        $this->rect($x, $y, $w, $h, true, [1, 1, 1], [0.76, 0.78, 0.90]);
         foreach ($this->wrapForWidth($message, $w - 12, 9) as $index => $line) {
             $this->textAt($x + 6, $y + $h - 14 - ($index * 10), $line, 9);
         }
@@ -258,7 +258,7 @@ class PdfService
     private function reportFooter(string $reference): void
     {
         $this->hroConfirmationLine(50, 62);
-        $this->drawLine(50, 48, 545, 48, [0.78, 0.84, 0.73], 0.5);
+        $this->drawLine(50, 48, 545, 48, [0.76, 0.78, 0.90], 0.5);
         $this->textAt(50, 37, 'Generated on ' . date('d M Y H:i') . ' by ' . app_config('name') . ' | ' . $reference, 6);
     }
 
@@ -269,10 +269,10 @@ class PdfService
 
     private function headerBlock(int $requestId, bool $approved): void
     {
-        $this->rect(50, 724, 495, 70, false, [0.96, 0.99, 0.94]);
+        $this->rect(50, 724, 495, 70, false, [0.95, 0.94, 1.00]);
         $this->rect(50, 724, 495, 70);
         $this->drawImage(58, 739, 58);
-        $this->centerText(780, 'COUNTY GOVERNMENT OF BUSIA', 13, 'F2');
+        $this->centerText(780, strtoupper((string) app_config('name', 'XEROMYND')), 13, 'F2');
         $this->centerText(764, 'STAFF ONLINE LEAVE APPLICATION SYSTEM', 10, 'F2');
         $this->centerText(744, $approved ? 'APPROVED LEAVE FORM' : 'LEAVE APPLICATION FORM', 15, 'F2');
         $this->textAt(438, 783, 'Form No: LAF-' . $requestId, 8, 'F2');
@@ -282,7 +282,7 @@ class PdfService
 
     private function sectionBand(float $y, string $title): void
     {
-        $this->rect(50, $y, 495, 22, false, [0.08, 0.42, 0.27]);
+        $this->rect(50, $y, 495, 22, false, [0.30, 0.16, 0.65]);
         $this->textAt(58, $y + 7, $title, 10, 'F2', [1, 1, 1]);
     }
 
@@ -290,7 +290,7 @@ class PdfService
     {
         $this->rect($x, $y, $w, $h, false, [1, 1, 1]);
         $this->rect($x, $y, $w, $h);
-        $this->textAt($x + 6, $y + $h - 11, strtoupper($label), 7, 'F2', [0.22, 0.30, 0.42]);
+        $this->textAt($x + 6, $y + $h - 11, strtoupper($label), 7, 'F2', [0.25, 0.22, 0.45]);
 
         $lines = $this->wrapForWidth(($value !== null && trim($value) !== '') ? $value : 'N/A', $w - 12, $valueSize);
         $maxLines = max(1, (int) floor(($h - 16) / ($valueSize + 2)));
@@ -303,7 +303,7 @@ class PdfService
     {
         $this->rect($x, $y, $w, $h, false, [1, 1, 1]);
         $this->rect($x, $y, $w, $h);
-        $this->textAt($x + 6, $y + $h - 12, strtoupper($label), 7, 'F2', [0.22, 0.30, 0.42]);
+        $this->textAt($x + 6, $y + $h - 12, strtoupper($label), 7, 'F2', [0.25, 0.22, 0.45]);
 
         $lines = $this->wrapForWidth(($value !== null && trim($value) !== '') ? $value : 'N/A', $w - 12, 9);
         $maxLines = max(1, (int) floor(($h - 18) / 11));
@@ -324,9 +324,9 @@ class PdfService
 
     private function stamp(float $x, float $y, string $text): void
     {
-        $this->rect($x, $y, 92, 28, false, [0.86, 0.96, 0.89]);
-        $this->rect($x, $y, 92, 28, true, null, [0.07, 0.39, 0.19], 1.4);
-        $this->textAt($x + 16, $y + 9, $text, 13, 'F2', [0.07, 0.39, 0.19]);
+        $this->rect($x, $y, 92, 28, false, [0.94, 0.90, 1.00]);
+        $this->rect($x, $y, 92, 28, true, null, [0.30, 0.16, 0.65], 1.4);
+        $this->textAt($x + 16, $y + 9, $text, 13, 'F2', [0.30, 0.16, 0.65]);
     }
 
     private function rect(float $x, float $y, float $w, float $h, bool $stroke = true, ?array $fill = null, ?array $strokeColor = null, float $lineWidth = 0.5): void
@@ -413,10 +413,10 @@ class PdfService
     private function colorLine(float $x, float $y, float $w, float $h): void
     {
         $segments = [
-            [[0.47, 0.72, 0.16], 0.34],
-            [[0.79, 0.58, 0.12], 0.18],
-            [[0.70, 0.13, 0.09], 0.20],
-            [[0.14, 0.13, 0.37], 0.28],
+            [[0.30, 0.16, 0.65], 0.34],
+            [[0.82, 0.28, 0.90], 0.24],
+            [[0.00, 0.68, 0.88], 0.24],
+            [[0.05, 0.08, 0.18], 0.18],
         ];
         $cursor = $x;
         foreach ($segments as [$color, $ratio]) {
@@ -654,7 +654,7 @@ class PdfService
 
     private function loadWatermark(): ?array
     {
-        $path = dirname(__DIR__, 2) . '/public/assets/images/busia-logo.jpg';
+        $path = dirname(__DIR__, 2) . '/public/assets/images/xeromynd-logo.jpg';
         if (!is_file($path)) {
             return null;
         }

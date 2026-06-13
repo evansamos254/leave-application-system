@@ -7,7 +7,7 @@ $smtpOverrides = $mailOverrides['smtp'] ?? [];
 unset($mailOverrides['smtp']);
 
 return [
-    'name' => 'Busia County Staff Online Leave Application System',
+    'name' => 'XEROMYND',
     'hro_confirmation_name' => '',
     'timezone' => 'Africa/Nairobi',
     'base_url' => '',
@@ -25,7 +25,7 @@ return [
             'enabled' => true,
             'transport' => 'smtp',
             'from' => 'evansamos702@gmail.com',
-            'from_name' => 'Busia County Leave System',
+            'from_name' => 'XEROMYND',
             'smtp' => [
                 'host' => 'smtp.gmail.com',
                 'port' => 587,
@@ -41,7 +41,7 @@ return [
             'enabled' => false,
             'gateway_url' => '',
             'api_key' => '',
-            'sender' => 'BusiaLeave',
+            'sender' => 'XEROMYND',
         ],
     ],
 ];

@@ -9,7 +9,9 @@
 <body class="auth-page">
     <main class="auth-card">
         <div class="auth-brand">
-            <span class="brand-mark">BC</span>
+            <span class="brand-mark">
+                <img src="<?= e(asset('images/xeromynd-logo.jpg')) ?>" alt="XEROMYND logo">
+            </span>
             <div>
                 <h1>Reset Password</h1>
                 <p>Recover access using your email address or National ID.</p>

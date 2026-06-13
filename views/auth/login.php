@@ -9,15 +9,8 @@
 <body class="auth-page">
     <main class="auth-shell auth-shell-login">
         <header class="auth-civic-header">
-            <div class="auth-logo-card auth-logo-left">
-                <img src="<?= e(asset('images/government-arm.png')) ?>" alt="Government coat of arms">
-            </div>
-            <div class="auth-civic-title">
-                <span>County Government of Busia</span>
-                <strong>Staff Leave Application</strong>
-            </div>
-            <div class="auth-logo-card auth-logo-right county-logo-card">
-                <img src="<?= e(asset('images/busia-logo.jpg')) ?>" alt="County Government of Busia logo">
+            <div class="auth-logo-card">
+                <img src="<?= e(asset('images/xeromynd-logo.jpg')) ?>" alt="XEROMYND logo">
             </div>
         </header>
 

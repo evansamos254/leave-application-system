@@ -194,7 +194,7 @@ class ExternalNotificationService
         }
 
         $from = $config['from'] ?? 'no-reply@leavesystem.local';
-        $fromName = $config['from_name'] ?? app_config('name', 'Busia County Leave System');
+        $fromName = $config['from_name'] ?? app_config('name', 'XEROMYND');
 
         if (($config['transport'] ?? 'mail') === 'smtp') {
             $sent = self::sendSmtpEmail($email, $subject, $message, $from, $fromName, $config['smtp'] ?? []);

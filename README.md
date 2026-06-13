@@ -1,4 +1,4 @@
-# Online Leave Application System
+# XEROMYND
 
 Plain PHP and MySQL implementation for employee leave requests, approval workflow, leave balances, reports, and admin management.
 

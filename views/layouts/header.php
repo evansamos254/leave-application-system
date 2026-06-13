@@ -24,10 +24,12 @@ $authDepartmentLabel = $isAuthHrOffice ? 'Office-level account' : ($authUser['de
     <aside class="sidebar" id="site-navigation" data-mobile-sidebar>
         <div class="sidebar-header">
             <a class="brand" href="<?= e(url('dashboard')) ?>">
-                <span class="brand-mark">BC</span>
+                <span class="brand-mark">
+                    <img src="<?= e(asset('images/xeromynd-logo.jpg')) ?>" alt="XEROMYND logo">
+                </span>
                 <span>
-                    <strong>Busia County</strong>
-                    <small>Staff Online Leave</small>
+                    <strong><?= e(app_config('name')) ?></strong>
+                    <small>Staff Leave Portal</small>
                 </span>
             </a>
             <button class="sidebar-close" type="button" aria-label="Close dashboard menu" data-menu-close>
