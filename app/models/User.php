@@ -57,7 +57,8 @@ class User
     {
         $stmt = db()->prepare(
             'INSERT INTO users (full_name, email, national_id, gender, password_hash, role, phone, employment_document_path, status)
-             VALUES (:full_name, :email, :national_id, :gender, :password_hash, :role, :phone, :employment_document_path, :status)'
+             VALUES (:full_name, :email, :national_id, :gender, :password_hash, :role, :phone, :employment_document_path, :status)
+             RETURNING id'
         );
 
         $stmt->execute([
@@ -72,7 +73,7 @@ class User
             'status' => $data['status'] ?? 'active',
         ]);
 
-        return (int) db()->lastInsertId();
+        return (int) $stmt->fetchColumn();
     }
 
     public static function updateLastLogin(int $id): void

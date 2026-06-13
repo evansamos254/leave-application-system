@@ -46,9 +46,9 @@ class Department
             return (int) $id;
         }
 
-        $stmt = db()->prepare('INSERT INTO departments (directorate_id, name) VALUES (?, ?)');
+        $stmt = db()->prepare('INSERT INTO departments (directorate_id, name) VALUES (?, ?) RETURNING id');
         $stmt->execute([$directorateId, $name]);
 
-        return (int) db()->lastInsertId();
+        return (int) $stmt->fetchColumn();
     }
 }

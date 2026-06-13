@@ -12,10 +12,10 @@ class Database
 
         $config = require dirname(__DIR__, 2) . '/config/database.php';
         $dsn = sprintf(
-            'mysql:host=%s;dbname=%s;charset=%s',
+            'pgsql:host=%s;dbname=%s;port=%s',
             $config['host'],
             $config['database'],
-            $config['charset']
+            $config['port'] ?? '5432'
         );
 
         self::$connection = new PDO($dsn, $config['username'], $config['password'], [
@@ -27,4 +27,3 @@ class Database
         return self::$connection;
     }
 }
-

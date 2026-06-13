@@ -8,7 +8,8 @@ class LeaveRequest
             'INSERT INTO leave_requests
              (employee_id, leave_type_id, contact_number, start_date, end_date, days_requested, reason, handover_notes, attachment_path)
              VALUES
-             (:employee_id, :leave_type_id, :contact_number, :start_date, :end_date, :days_requested, :reason, :handover_notes, :attachment_path)'
+             (:employee_id, :leave_type_id, :contact_number, :start_date, :end_date, :days_requested, :reason, :handover_notes, :attachment_path)
+             RETURNING id'
         );
 
         $stmt->execute([
@@ -23,7 +24,7 @@ class LeaveRequest
             'attachment_path' => $data['attachment_path'] ?? null,
         ]);
 
-        return (int) db()->lastInsertId();
+        return (int) $stmt->fetchColumn();
     }
 
     public static function update(int $id, array $data): void
@@ -139,7 +140,7 @@ class LeaveRequest
 
         if ($search !== null && trim($search) !== '') {
             $term = '%' . trim($search) . '%';
-            $sql .= ' AND (u.full_name LIKE ? OR u.email LIKE ? OR e.staff_id LIKE ? OR lt.name LIKE ?)';
+            $sql .= ' AND (u.full_name ILIKE ? OR u.email ILIKE ? OR e.staff_id ILIKE ? OR lt.name ILIKE ?)';
             array_push($params, $term, $term, $term, $term);
         }
 
